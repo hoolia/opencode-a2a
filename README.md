@@ -13,6 +13,19 @@
 
 `opencode-a2a` adds an A2A runtime layer to `opencode serve`, with auth, streaming, session continuity, interrupt handling, and a clear deployment boundary.
 
+## Hoolia Fork: OpenCode v2
+
+This is the [hoolia/opencode-a2a](https://github.com/hoolia/opencode-a2a) fork of
+[Intelligent-Internet/opencode-a2a](https://github.com/Intelligent-Internet/opencode-a2a)
+(Apache-2.0, original authorship and license retained). It targets **OpenCode 2.x**
+(`opencode serve` 2.1.0+, the `/api/*` HTTP API) and keeps the A2A surface identical to
+upstream. `OPENCODE_API_VERSION=v1` selects the unchanged upstream client for OpenCode 1.x.
+Mapping and degraded features: [docs/opencode-v2.md](docs/opencode-v2.md).
+
+```bash
+pip install "git+https://github.com/hoolia/opencode-a2a@v2.0.0+hoolia.1"
+```
+
 ## What This Is
 
 - An A2A adapter service built on `opencode serve`, with inbound runtime exposure plus outbound peer calling.
@@ -167,6 +180,7 @@ This repository improves the service boundary around OpenCode, but it does not t
 Read before deployment:
 
 - [SECURITY.md](SECURITY.md)
+- [docs/opencode-v2.md](docs/opencode-v2.md)
 - [docs/guide.md](docs/guide.md)
 - [SUPPORT.md](SUPPORT.md)
 - [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)

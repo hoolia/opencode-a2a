@@ -149,7 +149,7 @@ async def test_database_backend_persists_task_session_and_interrupt_state_across
 
     PersistentStateDummyClient.created_sessions = 0
     PersistentStateDummyClient.permission_reply_calls = []
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", PersistentStateDummyClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", PersistentStateDummyClient)
 
     database_url = f"sqlite+aiosqlite:///{tmp_path / 'app-state.db'}"
     settings = make_settings(

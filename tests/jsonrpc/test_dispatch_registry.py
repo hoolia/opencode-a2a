@@ -16,7 +16,7 @@ from tests.support.settings import make_settings
 async def test_extension_registry_tracks_configured_methods(monkeypatch) -> None:
     monkeypatch.setattr(
         app_module,
-        "OpencodeUpstreamClient",
+        "OpencodeV2UpstreamClient",
         DummySessionQueryOpencodeUpstreamClient,
     )
     app = app_module.create_app(
@@ -133,7 +133,7 @@ async def test_extension_methods_stay_on_local_registry(monkeypatch) -> None:
         del self, request, body, base_request
         raise AssertionError("extension method should not delegate to base JSON-RPC app")
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     monkeypatch.setattr(
         OpencodeSessionManagementJSONRPCApplication,
         "_handle_core_request",
@@ -169,7 +169,7 @@ async def test_extension_methods_stay_on_local_registry(monkeypatch) -> None:
 async def test_extension_methods_require_explicit_a2a_extensions_header(monkeypatch) -> None:
     monkeypatch.setattr(
         app_module,
-        "OpencodeUpstreamClient",
+        "OpencodeV2UpstreamClient",
         DummySessionQueryOpencodeUpstreamClient,
     )
     app = app_module.create_app(

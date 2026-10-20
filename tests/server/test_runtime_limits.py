@@ -257,7 +257,7 @@ def _create_rate_limited_app(**settings_overrides: Any) -> Any:
 async def test_rate_limit_rejects_excess_authenticated_requests(monkeypatch) -> None:
     import opencode_a2a.server.application as app_module
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", DummyChatOpencodeUpstreamClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", DummyChatOpencodeUpstreamClient)
     app = _create_rate_limited_app(
         test_bearer_token="test-token",
         a2a_rate_limit_max_requests=3,
@@ -281,7 +281,7 @@ async def test_rate_limit_rejects_excess_authenticated_requests(monkeypatch) -> 
 async def test_rate_limit_is_per_credential(monkeypatch) -> None:
     import opencode_a2a.server.application as app_module
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", DummyChatOpencodeUpstreamClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", DummyChatOpencodeUpstreamClient)
     app = _create_rate_limited_app(
         test_bearer_token="test-token",
         test_basic_username="operator",
@@ -305,7 +305,7 @@ async def test_rate_limit_is_per_credential(monkeypatch) -> None:
 async def test_rate_limit_public_card_keyed_by_peer_ip(monkeypatch) -> None:
     import opencode_a2a.server.application as app_module
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", DummyChatOpencodeUpstreamClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", DummyChatOpencodeUpstreamClient)
     app = _create_rate_limited_app(
         test_bearer_token="test-token",
         a2a_rate_limit_max_requests=2,
@@ -323,7 +323,7 @@ async def test_rate_limit_public_card_keyed_by_peer_ip(monkeypatch) -> None:
 async def test_rate_limit_can_be_disabled(monkeypatch) -> None:
     import opencode_a2a.server.application as app_module
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", DummyChatOpencodeUpstreamClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", DummyChatOpencodeUpstreamClient)
     app = _create_rate_limited_app(
         test_bearer_token="test-token",
         a2a_rate_limit_enabled=False,
@@ -342,7 +342,7 @@ async def test_rate_limit_can_be_disabled(monkeypatch) -> None:
 async def test_streaming_byte_budget_integration_rejects_rest_before_sse(monkeypatch) -> None:
     import opencode_a2a.server.application as app_module
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", IdleTerminatingChatClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", IdleTerminatingChatClient)
     app = _create_rate_limited_app(
         test_bearer_token="test-token",
         a2a_stream_max_bytes=128,
@@ -372,7 +372,7 @@ async def test_streaming_byte_budget_integration_rejects_rest_before_sse(monkeyp
 async def test_streaming_byte_budget_integration_terminates_jsonrpc_sse(monkeypatch) -> None:
     import opencode_a2a.server.application as app_module
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", IdleTerminatingChatClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", IdleTerminatingChatClient)
     app = _create_rate_limited_app(
         test_bearer_token="test-token",
         a2a_stream_max_bytes=128,
@@ -408,7 +408,7 @@ async def test_streaming_byte_budget_integration_terminates_jsonrpc_sse(monkeypa
 async def test_subscribe_missing_task_returns_not_found(monkeypatch) -> None:
     import opencode_a2a.server.application as app_module
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", DummyChatOpencodeUpstreamClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", DummyChatOpencodeUpstreamClient)
     app = _create_rate_limited_app(test_bearer_token="test-token")
     headers = {"Authorization": "Bearer test-token"}
     transport = httpx.ASGITransport(app=app)
@@ -423,7 +423,7 @@ async def test_subscribe_missing_task_returns_not_found(monkeypatch) -> None:
 async def test_streaming_byte_budget_integration_rejects_subscribe_before_sse(monkeypatch) -> None:
     import opencode_a2a.server.application as app_module
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", DummyChatOpencodeUpstreamClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", DummyChatOpencodeUpstreamClient)
     app = _create_rate_limited_app(
         test_bearer_token="test-token",
         a2a_stream_max_bytes=128,

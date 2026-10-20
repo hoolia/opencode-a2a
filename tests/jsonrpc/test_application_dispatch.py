@@ -22,7 +22,7 @@ from tests.support.settings import make_settings
 def _build_dispatcher(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(
         app_module,
-        "OpencodeUpstreamClient",
+        "OpencodeV2UpstreamClient",
         DummySessionQueryOpencodeUpstreamClient,
     )
     app = app_module.create_app(make_settings(test_bearer_token="test-token", **_BASE_SETTINGS))

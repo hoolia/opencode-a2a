@@ -31,7 +31,7 @@ async def test_session_prompt_async_extension_success(monkeypatch):
             **_BASE_SETTINGS,
         )
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token="t-1",
@@ -83,7 +83,7 @@ async def test_session_prompt_async_extension_accepts_subtask_parts(monkeypatch)
             **_BASE_SETTINGS,
         )
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token="t-1",
@@ -149,7 +149,7 @@ async def test_session_prompt_async_extension_prefers_workspace_metadata(monkeyp
     dummy = DummyOpencodeUpstreamClient(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -188,7 +188,7 @@ async def test_session_prompt_async_extension_rejects_invalid_params(monkeypatch
     dummy = DummyOpencodeUpstreamClient(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -287,7 +287,7 @@ async def test_session_prompt_async_extension_rejects_owner_mismatch(monkeypatch
     dummy = DummyOpencodeUpstreamClient(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -334,7 +334,7 @@ async def test_session_prompt_async_extension_reuses_directory_boundary_validati
             **_BASE_SETTINGS,
         )
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token="t-1",
@@ -380,7 +380,7 @@ async def test_session_prompt_async_extension_honors_directory_override_switch(m
             **_BASE_SETTINGS,
         )
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token="t-1",
@@ -427,7 +427,7 @@ async def test_session_prompt_async_extension_maps_404_to_session_not_found(monk
             resp = httpx.Response(404, request=req)
             raise httpx.HTTPStatusError("Not Found", request=req, response=resp)
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", NotFoundPromptAsyncClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", NotFoundPromptAsyncClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -470,7 +470,7 @@ async def test_session_prompt_async_extension_maps_non_204_to_payload_error(monk
                 "OpenCode /session/{sessionID}/prompt_async must return 204; got 200"
             )
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", InvalidPromptAsyncStatusClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", InvalidPromptAsyncStatusClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -509,7 +509,7 @@ async def test_session_prompt_async_extension_maps_500_to_upstream_http_error(mo
             resp = httpx.Response(500, request=req)
             raise httpx.HTTPStatusError("Internal Server Error", request=req, response=resp)
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", UpstreamErrorPromptAsyncClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", UpstreamErrorPromptAsyncClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -551,7 +551,7 @@ async def test_session_prompt_async_extension_maps_network_error_to_unreachable(
             req = httpx.Request("POST", "http://opencode/session/s-1/prompt_async")
             raise httpx.ConnectError("network down", request=req)
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", NetworkErrorPromptAsyncClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", NetworkErrorPromptAsyncClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -595,7 +595,7 @@ async def test_session_prompt_async_release_failure_does_not_override_response(m
         raise RuntimeError("release failed")
 
     caplog.set_level(logging.ERROR)
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", NetworkErrorPromptAsyncClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", NetworkErrorPromptAsyncClient)
     monkeypatch.setattr(SessionManager, "release_preferred_session_claim", _release_raises)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
@@ -641,7 +641,7 @@ async def test_session_prompt_async_extension_maps_concurrency_limit_to_unreacha
                 limit=1,
             )
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", BusyPromptAsyncClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", BusyPromptAsyncClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -677,7 +677,7 @@ async def test_session_prompt_async_extension_notification_returns_204(monkeypat
     dummy = DummyOpencodeUpstreamClient(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )

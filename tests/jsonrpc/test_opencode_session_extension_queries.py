@@ -29,7 +29,7 @@ def _identity_for_token(token: str) -> str:
 async def test_session_query_extension_requires_bearer_token(monkeypatch):
     import opencode_a2a.server.application as app_module
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", DummyOpencodeUpstreamClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", DummyOpencodeUpstreamClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -66,7 +66,7 @@ async def test_session_query_extension_returns_jsonrpc_result(monkeypatch):
             **_BASE_SETTINGS,
         )
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token="t-1",
@@ -141,7 +141,7 @@ async def test_session_query_extension_supports_session_filters_and_message_curs
         )
     )
     dummy._messages_next_cursor = "cursor-2"
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token="t-1",
@@ -211,7 +211,7 @@ async def test_session_query_extension_prefers_workspace_metadata_for_routing(mo
             **_BASE_SETTINGS,
         )
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token="t-1",
@@ -270,7 +270,7 @@ async def test_session_query_extension_rejects_directory_outside_workspace(monke
             **_BASE_SETTINGS,
         )
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token="t-1",
@@ -314,7 +314,7 @@ async def test_session_query_extension_applies_default_limit(monkeypatch):
         {"id": f"s-{index}", "title": f"Session s-{index}"}
         for index in range(1, SESSION_QUERY_DEFAULT_LIMIT + 6)
     ]
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token="t-1",
@@ -370,7 +370,7 @@ async def test_session_query_extension_enforces_session_limit_locally(monkeypatc
         {"id": "s-2", "title": "Session s-2"},
         {"id": "s-3", "title": "Session s-3"},
     ]
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token="t-1",
@@ -411,7 +411,7 @@ async def test_provider_discovery_extension_returns_normalized_catalog(monkeypat
             **_BASE_SETTINGS,
         )
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token="t-1",
@@ -474,7 +474,7 @@ async def test_provider_discovery_extension_rejects_invalid_provider_id(monkeypa
     dummy = DummyOpencodeUpstreamClient(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -505,7 +505,7 @@ async def test_provider_discovery_extension_maps_payload_mismatch(monkeypatch):
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
     dummy.provider_catalog_payload = {"all": "bad", "default": {}, "connected": []}
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -541,7 +541,7 @@ async def test_provider_discovery_extension_maps_concurrency_limit_to_unreachabl
                 limit=1,
             )
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", BusyDiscoveryClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", BusyDiscoveryClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -576,7 +576,7 @@ async def test_session_query_extension_rejects_non_array_upstream_payload(monkey
             super().__init__(_settings, **kwargs)
             self._sessions_payload = {"foo": "bar"}  # no items
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", WeirdPayloadClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", WeirdPayloadClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -613,7 +613,7 @@ async def test_session_query_extension_maps_concurrency_limit_to_unreachable(mon
                 limit=1,
             )
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", BusySessionQueryClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", BusySessionQueryClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -675,7 +675,7 @@ async def test_interrupt_recovery_extension_returns_identity_scoped_items(monkey
         context_id="ctx-3",
         details={"permission": "write"},
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token=token,
@@ -727,7 +727,7 @@ async def test_interrupt_recovery_extension_rejects_unsupported_fields(monkeypat
     dummy = DummyOpencodeUpstreamClient(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -758,7 +758,7 @@ async def test_interrupt_recovery_extension_notification_returns_204(monkeypatch
     dummy = DummyOpencodeUpstreamClient(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -783,7 +783,7 @@ async def test_session_query_extension_session_title_is_extracted_or_placeholder
             super().__init__(_settings, **kwargs)
             self._sessions_payload = [{"id": "s-1", "title": "My Session"}]
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", TitlePayloadClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", TitlePayloadClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -811,7 +811,7 @@ async def test_session_query_extension_keeps_session_with_empty_title(monkeypatc
             super().__init__(_settings, **kwargs)
             self._sessions_payload = [{"id": "s-1", "title": "   "}]
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", EmptyTitlePayloadClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", EmptyTitlePayloadClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -844,7 +844,7 @@ async def test_session_query_extension_message_role_and_id_from_info(monkeypatch
                 }
             ]
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", InfoRoleClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", InfoRoleClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -884,7 +884,7 @@ async def test_session_query_extension_accepts_top_level_list_payload(monkeypatc
                 }
             ]
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", ListPayloadClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", ListPayloadClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -929,7 +929,7 @@ async def test_session_query_extension_rejects_non_list_wrapped_payload(monkeypa
             self._sessions_payload = {"sessions": [{"id": "s-1"}]}
             self._messages_payload = {"messages": [{"id": "m-1", "text": "SECRET_HISTORY"}]}
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", AltKeyPayloadClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", AltKeyPayloadClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -973,7 +973,7 @@ async def test_session_query_extension_rejects_cursor_limit(monkeypatch):
             **_BASE_SETTINGS,
         )
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token="t-1",
@@ -1015,7 +1015,7 @@ async def test_session_query_extension_rejects_page_size_pagination(monkeypatch)
             **_BASE_SETTINGS,
         )
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token="t-1",
@@ -1056,7 +1056,7 @@ async def test_session_query_extension_rejects_limit_above_max(monkeypatch):
             **_BASE_SETTINGS,
         )
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token="t-1",
@@ -1102,7 +1102,7 @@ async def test_session_query_extension_rejects_nested_query_object(
             **_BASE_SETTINGS,
         )
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token="t-1",
@@ -1145,7 +1145,7 @@ async def test_session_query_extension_maps_404_to_session_not_found(monkeypatch
             response = httpx.Response(404, request=request)
             raise httpx.HTTPStatusError("Not Found", request=request, response=response)
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", NotFoundOpencodeUpstreamClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", NotFoundOpencodeUpstreamClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -1178,7 +1178,7 @@ async def test_session_query_extension_maps_404_to_session_not_found(monkeypatch
 async def test_session_query_extension_does_not_log_response_bodies(monkeypatch, caplog):
     import opencode_a2a.server.application as app_module
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", DummyOpencodeUpstreamClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", DummyOpencodeUpstreamClient)
     caplog.set_level(logging.DEBUG, logger="opencode_a2a.server.application")
 
     app = app_module.create_app(

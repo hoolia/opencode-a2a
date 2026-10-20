@@ -27,6 +27,7 @@ This section keeps only the protocol-relevant variables. For the full runtime va
 Key variables to understand protocol behavior:
 
 - `A2A_STATIC_AUTH_CREDENTIALS`: required static credential registry in JSON array form. Supports multiple `bearer` / `basic` credentials, bearer-only required `principal`, optional `credential_id`, optional `capabilities`, and optional `enabled=false` for explicit disablement.
+- `OPENCODE_API_VERSION`: upstream OpenCode HTTP API, `v2` (default, OpenCode 2.x `/api/*`) or `v1` (OpenCode 1.x). See [opencode-v2.md](opencode-v2.md).
 - `OPENCODE_BASE_URL`: upstream OpenCode HTTP endpoint. Default: `http://127.0.0.1:4096`. In two-process deployments, set it explicitly.
 - `OPENCODE_WORKSPACE_ROOT`: service-level default workspace root exposed to OpenCode when clients do not request a narrower directory override.
 - `A2A_ALLOW_DIRECTORY_OVERRIDE`: controls whether clients may pass `metadata.opencode.directory`.

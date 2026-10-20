@@ -20,7 +20,7 @@ async def test_workspace_control_extension_supports_read_only_methods(monkeypatc
     dummy = DummyOpencodeUpstreamClient(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -86,7 +86,7 @@ async def test_workspace_control_discovery_responses_exclude_internal_fields(
     dummy = DummyOpencodeUpstreamClient(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -128,7 +128,7 @@ async def test_workspace_control_extension_supports_mutating_methods(monkeypatch
     dummy = DummyOpencodeUpstreamClient(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", lambda _settings, **_kwargs: dummy)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", lambda _settings, **_kwargs: dummy)
     app = app_module.create_app(
         make_settings(
             test_bearer_token="t-1",
@@ -215,7 +215,7 @@ async def test_workspace_control_extension_supports_mutating_methods(monkeypatch
 async def test_workspace_control_extension_validates_request_shape(monkeypatch) -> None:
     import opencode_a2a.server.application as app_module
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", DummyOpencodeUpstreamClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", DummyOpencodeUpstreamClient)
     app = app_module.create_app(
         make_settings(
             test_bearer_token=None,
@@ -263,7 +263,7 @@ async def test_workspace_control_mutations_require_workspace_mutation_capability
 ) -> None:
     import opencode_a2a.server.application as app_module
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", DummyOpencodeUpstreamClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", DummyOpencodeUpstreamClient)
     app = app_module.create_app(
         make_settings(
             test_bearer_token=None,
@@ -317,7 +317,7 @@ async def test_workspace_control_mutations_require_workspace_mutation_capability
 async def test_workspace_control_mutations_are_disabled_by_default(monkeypatch) -> None:
     import opencode_a2a.server.application as app_module
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", DummyOpencodeUpstreamClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", DummyOpencodeUpstreamClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -351,7 +351,7 @@ async def test_workspace_control_extension_maps_upstream_http_error(monkeypatch)
             response = httpx.Response(503, request=request)
             raise httpx.HTTPStatusError("boom", request=request, response=response)
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", UpstreamErrorClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", UpstreamErrorClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )
@@ -413,7 +413,7 @@ async def test_workspace_control_extension_maps_malformed_upstream_items_to_payl
     else:
         MalformedUpstreamClient.list_worktrees = _list_worktrees
 
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", MalformedUpstreamClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", MalformedUpstreamClient)
     app = app_module.create_app(
         make_settings(test_bearer_token="t-1", a2a_log_payloads=False, **_BASE_SETTINGS)
     )

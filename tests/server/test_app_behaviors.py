@@ -462,7 +462,7 @@ def test_agent_card_helper_builders_cover_optional_branches() -> None:
 
 @pytest.mark.asyncio
 async def test_health_endpoint_accepts_configured_basic_auth(monkeypatch) -> None:
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", DummyChatOpencodeUpstreamClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", DummyChatOpencodeUpstreamClient)
     settings = make_settings(
         test_bearer_token="test-token",
         test_basic_username="operator",
@@ -479,7 +479,7 @@ async def test_health_endpoint_accepts_configured_basic_auth(monkeypatch) -> Non
 
 @pytest.mark.asyncio
 async def test_health_endpoint_rejects_disabled_registry_token(monkeypatch) -> None:
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", DummyChatOpencodeUpstreamClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", DummyChatOpencodeUpstreamClient)
     settings = make_settings(
         test_bearer_token=None,
         a2a_static_auth_credentials=(
@@ -509,7 +509,7 @@ async def test_health_endpoint_rejects_disabled_registry_token(monkeypatch) -> N
 
 @pytest.mark.asyncio
 async def test_registry_auth_accepts_configured_bearer_only(monkeypatch) -> None:
-    monkeypatch.setattr(app_module, "OpencodeUpstreamClient", DummyChatOpencodeUpstreamClient)
+    monkeypatch.setattr(app_module, "OpencodeV2UpstreamClient", DummyChatOpencodeUpstreamClient)
     settings = make_settings(
         a2a_static_auth_credentials=(
             {
@@ -541,7 +541,7 @@ async def test_auth_health_lifespan_and_openapi_cache(monkeypatch, caplog) -> No
     closable = _ClosableClient(make_settings(test_bearer_token="test-token"))
     monkeypatch.setattr(
         app_module,
-        "OpencodeUpstreamClient",
+        "OpencodeV2UpstreamClient",
         lambda _settings, **_kwargs: closable,
     )
 
@@ -688,7 +688,7 @@ async def test_rest_adapter_routes_and_preconsume_error() -> None:
 async def test_push_notification_routes_are_explicitly_unsupported(monkeypatch) -> None:
     monkeypatch.setattr(
         app_module,
-        "OpencodeUpstreamClient",
+        "OpencodeV2UpstreamClient",
         DummyChatOpencodeUpstreamClient,
     )
     app = create_app(make_settings(test_bearer_token="test-token"))
@@ -722,7 +722,7 @@ async def test_push_notification_routes_are_explicitly_unsupported(monkeypatch) 
 async def test_metrics_endpoint_is_scrapeable_and_authenticated(monkeypatch) -> None:
     monkeypatch.setattr(
         app_module,
-        "OpencodeUpstreamClient",
+        "OpencodeV2UpstreamClient",
         DummyChatOpencodeUpstreamClient,
     )
     app = create_app(make_settings(test_bearer_token="test-token"))
@@ -749,7 +749,7 @@ async def test_metrics_endpoint_is_scrapeable_and_authenticated(monkeypatch) -> 
 async def test_push_notification_jsonrpc_methods_remain_unsupported(monkeypatch) -> None:
     monkeypatch.setattr(
         app_module,
-        "OpencodeUpstreamClient",
+        "OpencodeV2UpstreamClient",
         DummyChatOpencodeUpstreamClient,
     )
     app = create_app(make_settings(test_bearer_token="test-token"))
@@ -868,7 +868,7 @@ async def test_on_cancel_task_and_resubscribe_cover_race_paths(monkeypatch) -> N
 async def test_rest_message_routes_cover_message_and_error_wrappers(monkeypatch) -> None:
     monkeypatch.setattr(
         app_module,
-        "OpencodeUpstreamClient",
+        "OpencodeV2UpstreamClient",
         DummyChatOpencodeUpstreamClient,
     )
     app = create_app(make_settings(test_bearer_token="test-token"))

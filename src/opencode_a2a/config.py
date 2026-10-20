@@ -149,6 +149,10 @@ class Settings(BaseSettings):
 
     # OpenCode settings
     opencode_base_url: str = Field(default="http://127.0.0.1:4096", alias="OPENCODE_BASE_URL")
+    opencode_api_version: Literal["v1", "v2"] = Field(
+        default="v2",
+        alias="OPENCODE_API_VERSION",
+    )
     opencode_workspace_root: str | None = Field(default=None, alias="OPENCODE_WORKSPACE_ROOT")
     opencode_agent: str | None = Field(default=None, alias="OPENCODE_AGENT")
     opencode_system: str | None = Field(default=None, alias="OPENCODE_SYSTEM")

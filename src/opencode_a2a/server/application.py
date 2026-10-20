@@ -75,6 +75,7 @@ from ..jsonrpc.application import (
 from ..jsonrpc.error_responses import build_http_error_body
 from ..metadata_access import extract_namespaced_value
 from ..opencode_upstream_client import OpencodeUpstreamClient
+from ..opencode_upstream_client_v2 import OpencodeV2UpstreamClient
 from ..output_modes import (
     NegotiatingResultAggregator,
     apply_accepted_output_modes,
@@ -866,7 +867,12 @@ def create_app(settings: Settings) -> FastAPI:
         settings,
         engine=database_engine,
     )
-    upstream_client = OpencodeUpstreamClient(
+    upstream_client_cls = (
+        OpencodeUpstreamClient
+        if settings.opencode_api_version == "v1"
+        else OpencodeV2UpstreamClient
+    )
+    upstream_client = upstream_client_cls(
         settings,
         interrupt_request_repository=runtime_state_runtime.interrupt_request_repository,
     )

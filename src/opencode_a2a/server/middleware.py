@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import json
 import logging
@@ -30,6 +31,7 @@ from ..jsonrpc.error_responses import (
     version_not_supported_error,
 )
 from ..jsonrpc.models import JSONRPCError
+from ..jwt_auth import authenticate_tenant_jwt, build_trusted_issuers
 from ..protocol_versions import (
     UnsupportedProtocolVersionError,
     negotiate_protocol_version,
@@ -158,6 +160,9 @@ def _resolve_rate_limit_key(request: Request) -> str:
 def add_auth_middleware(app: FastAPI, settings) -> None:  # noqa: ANN001
     configured_credentials = build_static_auth_credentials(settings)
     advertised_schemes = {credential.auth_scheme for credential in configured_credentials}
+    trusted_issuers = build_trusted_issuers(settings)
+    if trusted_issuers:
+        advertised_schemes.add("bearer")
 
     def _unauthorized_response() -> JSONResponse:
         challenges: list[str] = []
@@ -190,6 +195,13 @@ def add_auth_middleware(app: FastAPI, settings) -> None:  # noqa: ANN001
             auth_scheme=auth_scheme,
             auth_value=provided,
         )
+        if principal is None and trusted_issuers and auth_scheme.lower() == "bearer":
+            principal = await asyncio.to_thread(
+                authenticate_tenant_jwt,
+                issuers=trusted_issuers,
+                tenant=settings.a2a_tenant,
+                token=provided,
+            )
         if principal is None:
             return _unauthorized_response()
         request.state.authenticated_principal = principal

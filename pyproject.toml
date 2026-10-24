@@ -33,6 +33,7 @@ dependencies = [
     "fastapi>=0.139,<1.0",
     "httpx>=0.27,<1.0",
     "pydantic>=2.6,<3.0",
+    "pyjwt[crypto]>=2.10,<3.0",
     "pydantic-settings>=2.14.2,<3.0",
     "protobuf>=6.33.5,<8.0",
     # pyasn1: PYSEC-2026-3455/3456/3457 (via google-auth <- a2a-sdk).

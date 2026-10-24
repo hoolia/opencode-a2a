@@ -138,6 +138,25 @@ StaticAuthCredentialList = Annotated[
 ]
 
 
+class JwtIssuerSettings(BaseModel):
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    issuer: str
+    # kubernetes: ServiceAccount tokens, tenant by namespace; oidc: tenant by the groups claim
+    kind: Literal["kubernetes", "oidc"] = "oidc"
+    jwks_uri: str | None = None
+    audiences: tuple[str, ...] = ()
+    ca_file: str | None = None
+    token_file: str | None = None
+
+
+JwtIssuerList = Annotated[
+    tuple[JwtIssuerSettings, ...],
+    NoDecode,
+    BeforeValidator(_parse_auth_credentials),
+]
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="",
@@ -271,6 +290,9 @@ class Settings(BaseSettings):
         default=(),
         alias="A2A_STATIC_AUTH_CREDENTIALS",
     )
+    # bearer JWTs of these issuers are admitted when the caller belongs to A2A_TENANT
+    a2a_tenant: str | None = Field(default=None, alias="A2A_TENANT")
+    a2a_jwt_issuers: JwtIssuerList = Field(default=(), alias="A2A_JWT_ISSUERS")
 
     a2a_pending_session_claim_ttl_seconds: float = Field(
         default=30.0,
@@ -349,11 +371,16 @@ class Settings(BaseSettings):
             and not self.a2a_task_store_database_url.startswith("sqlite+aiosqlite:")
         ):
             raise ValueError("A2A_TASK_STORE_DATABASE_URL must use the sqlite+aiosqlite scheme")
+        if bool(self.a2a_tenant) != bool(self.a2a_jwt_issuers):
+            raise ValueError("A2A_TENANT and A2A_JWT_ISSUERS are set together")
         if self.a2a_static_auth_credentials:
             if not any(credential.enabled for credential in self.a2a_static_auth_credentials):
                 raise ValueError(
                     "A2A_STATIC_AUTH_CREDENTIALS must contain at least one enabled credential"
                 )
-        else:
-            raise ValueError("Configure runtime authentication via A2A_STATIC_AUTH_CREDENTIALS")
+        elif not self.a2a_jwt_issuers:
+            raise ValueError(
+                "Configure runtime authentication via A2A_STATIC_AUTH_CREDENTIALS "
+                "or A2A_JWT_ISSUERS"
+            )
         return self
